@@ -3,7 +3,10 @@
 class Navigation {
   Navigation._();
 
-  static const initScreen = "/";
-  static const homeScreen = "home_screen";
+  static const homeScreen = "/";
+  static const categoriesScreen = "/categories";
+  static const searchScreen = "/search";
+  static const detailScreen = "/detail";
+  static const cartScreen = "/cart";
   
 }

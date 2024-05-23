@@ -1,8 +1,9 @@
+import 'package:apistorepackage/infraestructure/api/public/store/store_api.dart';
 import 'package:atomicdesign/ui/foundation/theme_foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'domain/viewmodel/init_session_viewmodel.dart';
+import 'domain/viewmodel/home_session_viewmodel.dart';
 import 'infraestructure/local/preferences.dart';
 import 'ui/navigation/routes.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => InitSessionViewModel(pref: Preferences()),
+        create: (context) => HomeSessionViewModel(pref: Preferences(),storeApi:  StoreApi()),
       child: const MyAppWithState(),
       );
   }
