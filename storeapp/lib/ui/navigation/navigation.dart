@@ -1,7 +1,6 @@
 
 
-class Navigation {
-  Navigation._();
+abstract class Navigation {
 
   static const homeScreen = "/";
   static const categoriesScreen = "/categories";

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/viewmodel/home_session_viewmodel.dart';
+import '../navigation/navigation.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -33,7 +34,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               backgroundColor: ColorsFoundation.basicAppbarBackgroundColor,
             ),
             body: showData(viewModel.productsUi, viewModel.hasValidProducts && viewModel.hasValidCategories,
-                viewModel.hasErrorProducts || viewModel.hasErrorProducts, () => null, (id) => null, viewModel.categories,(id){
+                viewModel.hasErrorProducts || viewModel.hasErrorProducts, () => null, (id) {
+                  print('--- id$id');
+                  Navigator.pushNamed(context, Navigation.detailScreen,arguments: viewModel.products[id]);
+                }, viewModel.categories,(id){
                   if(id == 0){
                     viewModel.getAllProducts();
                   }
