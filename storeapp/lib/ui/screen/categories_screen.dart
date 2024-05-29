@@ -1,8 +1,8 @@
 import 'package:atomicdesign/domain/model/product_ui_model.dart';
-import 'package:atomicdesign/ui/foundation/colors_foundation.dart';
 import 'package:atomicdesign/ui/page/list_product_page.dart';
 import 'package:atomicdesign/ui/page/loading_page.dart';
 import 'package:atomicdesign/ui/page/try_again_page.dart';
+import 'package:atomicdesign/ui/template/app_wbar_template.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,23 +28,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           hasInit = true;
         }
 
-        return Scaffold(
-            appBar: AppBar(
-              title: const Text("Categories"),
-              backgroundColor: ColorsFoundation.basicAppbarBackgroundColor,
-            ),
-            body: showData(viewModel.productsUi, viewModel.hasValidProducts && viewModel.hasValidCategories,
-                viewModel.hasErrorProducts || viewModel.hasErrorProducts, () => null, (id) {
-                  print('--- id$id');
-                  Navigator.pushNamed(context, Navigation.detailScreen,arguments: viewModel.products[id]);
-                }, viewModel.categories,(id){
-                  if(id == 0){
-                    viewModel.getAllProducts();
-                  }
-                  else{
-                    viewModel.getDataForCategory(viewModel.categories[id]);
-                  }
-                },));
+        return AppWbarTemplate(
+          title: 'Categories',
+          counter: '3',
+          onCLickCounter: () {},
+          child: showData(
+            viewModel.productsUi,
+            viewModel.hasValidProducts && viewModel.hasValidCategories,
+            viewModel.hasErrorProducts || viewModel.hasErrorProducts,
+            () => null,
+            (id) {
+              Navigator.pushNamed(context, Navigation.detailScreen,
+                  arguments: viewModel.products[id].id);
+            },
+            viewModel.categories,
+            (id) {
+              if (id == 0) {
+                viewModel.getAllProducts();
+              } else {
+                viewModel.getDataForCategory(viewModel.categories[id]);
+              }
+            },
+          ),
+        );
       },
     );
   }
@@ -56,19 +62,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       Function() onPressedRetry,
       Function(int id) onPressedItem,
       List<String> categories,
-      Function(int id) onClickCategories
-      ) {
-    print('hasError:$hasError hasValidData:$hasValidData');
+      Function(int id) onClickCategories) {
     if (hasError) {
       return TryAgainPage(onPressed: onPressedRetry());
     } else if (hasValidData) {
       return ListProductPage(
-            products: products,
-            shrinkWrap: false,
-            onClick: (id) => onPressedItem(id),
-            categories: categories,
-            onClickCategories: (int id) => onClickCategories(id),
-          );
+        products: products,
+        shrinkWrap: false,
+        onClick: (id) => onPressedItem(id),
+        categories: categories,
+        onClickCategories: (int id) => onClickCategories(id),
+      );
     } else {
       return const LoadingPage();
     }

@@ -1,6 +1,6 @@
-import 'package:atomicdesign/ui/foundation/colors_foundation.dart';
 import 'package:atomicdesign/ui/page/initial_page.dart';
 import 'package:atomicdesign/ui/page/register_page.dart';
+import 'package:atomicdesign/ui/template/app_wbar_template.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,19 +24,14 @@ class HomeScreen extends StatelessWidget {
         if(!viewModel.hasShownAppLogo) return const InitalPage();
         final greeting = viewModel.session?.firstName ?? "";
         final content = viewModel.session != null
-            ? TextButton(onPressed: ()=> Navigator.pushNamed(context, Navigation.categoriesScreen), child: const Text('Goto categories'),)// HomeScreen()
+            ? TextButton(onPressed: ()=> Navigator.pushNamed(context, Navigation.categoriesScreen), child: const Text('Goto categories'),)
             : Registerpage(
                 register: ((firstName, lastName, email, pwd) {
                   viewModel.setSession(firstName, lastName, email, pwd);
                 }),
               );
 
-        return Scaffold(
-            appBar: AppBar(
-              title: Text("Welcome: $greeting"),
-              backgroundColor: ColorsFoundation.basicAppbarBackgroundColor,
-            ),
-            body: content);
+        return AppWbarTemplate(title: 'Welcome: $greeting', counter: '3', onCLickCounter: (){}, child: content);
       },
     );
   }

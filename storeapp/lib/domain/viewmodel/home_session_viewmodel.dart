@@ -25,7 +25,6 @@ class HomeSessionViewModel extends ChangeNotifier {
   var hasErrorCategories = false;
   List<String> categories = [];
 
-
   void requireSession() async {
     if (!hasCheckedSession) {
       hasCheckedSession = true;
@@ -126,6 +125,5 @@ class HomeSessionViewModel extends ChangeNotifier {
       },
     );
   }
-
 
 }

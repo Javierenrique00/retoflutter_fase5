@@ -1,6 +1,14 @@
 import 'package:apistorepackage/model/product/product_model.dart';
-import 'package:atomicdesign/ui/foundation/colors_foundation.dart';
+import 'package:atomicdesign/domain/model/pdp_ui_model.dart';
+import 'package:atomicdesign/ui/page/loading_page.dart';
+import 'package:atomicdesign/ui/page/pdp_page.dart';
+import 'package:atomicdesign/ui/page/try_again_page.dart';
+import 'package:atomicdesign/ui/template/app_wbar_template.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../domain/viewmodel/pdp_viewmodel.dart';
+import '../common/utils.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
@@ -10,15 +18,56 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  bool hasInit = false;
+
   @override
   Widget build(BuildContext context) {
-    final product = ModalRoute.of(context)!.settings.arguments as ProductModel;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(product.title),
-        backgroundColor: ColorsFoundation.basicAppbarBackgroundColor,
-      ),
-      body: const Text('Detalle del producto'),
+    final id = ModalRoute.of(context)!.settings.arguments as int;
+
+    return Consumer<PdpViewModel>(
+      builder: (context, viewModel, child) {
+        if (!hasInit) {
+          viewModel.getProductDetail(id);
+          hasInit = true;
+        }
+
+        return AppWbarTemplate(
+          title: 'PDP',
+          counter: '3',
+          onCLickCounter: () {},
+          child: showDetail(
+              viewModel.productDetail,
+              viewModel.hasValidProductDetail,
+              viewModel.hasErrorProductDetail, () {
+            viewModel.getProductDetail(id);
+          }),
+        );
+      },
     );
+  }
+
+  Widget showDetail(
+    ProductModel? product,
+    bool isValid,
+    bool hasError,
+    Function() onPressedRetry,
+  ) {
+    if (hasError) {
+      return TryAgainPage(onPressed: onPressedRetry());
+    } else if (isValid) {
+      if (product == null) return TryAgainPage(onPressed: onPressedRetry());
+      return PdpPage(
+        detail: PdpUiModel(
+          id: product.id,
+          title: product.title,
+          price: Utils.convCurrency(product.price),
+          description: product.description,
+          category: product.category,
+          image: product.image,
+        ),
+      );
+    } else {
+      return const LoadingPage();
+    }
   }
 }
