@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../infraestructure/local/preferences_interface.dart';
 import '../../ui/common/utils.dart';
+import '../model/local_cart_model/local_cart_model.dart';
 import '../model/local_session_model/local_session_model.dart';
 
 class HomeSessionViewModel extends ChangeNotifier {
@@ -24,6 +25,14 @@ class HomeSessionViewModel extends ChangeNotifier {
   var hasValidCategories = false;
   var hasErrorCategories = false;
   List<String> categories = [];
+
+  var isRequestingCart = false;
+  List<LocalCartModel> cart = [];
+  int totalCartItems = 0;
+  List<ProductUiModel> cartDetailsUi = [];
+  double totalCartPrice = 0;
+  List<int> cartQtys = [];
+
 
   void requireSession() async {
     if (!hasCheckedSession) {
@@ -117,6 +126,7 @@ class HomeSessionViewModel extends ChangeNotifier {
         products.clear();
         productsUi.clear();
         products.addAll(r);
+        calcCartDetails();
         final productsUiTemp =  products.map((e) => ProductUiModel(id: e.id, urlImage: e.image, name: e.title, price: Utils.convCurrency(e.price) )).toList();
         productsUi.addAll(productsUiTemp);
         hasErrorProducts = false;
@@ -124,6 +134,91 @@ class HomeSessionViewModel extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  void addToCart(int id) async {
+    isRequestingCart = true;
+    final respCart =  await pref.getLocalCart();
+    if(respCart!=null){
+      final index = respCart.indexWhere((element) => element.id == id);
+      if(index>=0){
+        respCart[index] = LocalCartModel(id: id, qty: respCart[index].qty + 1);
+      }else{
+        respCart.add(LocalCartModel(id: id, qty: 1));
+      }
+      cart.clear();
+      cart.addAll(respCart);
+    }else{
+      cart.clear();
+      cart.add(LocalCartModel(id: id, qty: 1));
+    }
+    calcCartDetails();
+    totalCartItems =  cart.fold(0, (previousValue, element) => previousValue + element.qty);
+    isRequestingCart = false;
+    pref.setLocalCart(cart);
+    notifyListeners();
+  }
+
+  void restToCart(int id) async {
+    isRequestingCart = true;
+    final respCart =  await pref.getLocalCart();
+    if(respCart!=null){
+      final index = respCart.indexWhere((element) => element.id == id);
+      if(index>=0){
+        if(respCart[index].qty == 1){
+          respCart.removeAt(index);
+        }else{
+          respCart[index] = LocalCartModel(id: id, qty: respCart[index].qty - 1);
+        }
+      }
+      cart.clear();
+      cart.addAll(respCart);
+    }else{
+      cart.clear();
+      cart.add(LocalCartModel(id: id, qty: 1));
+    }
+    calcCartDetails();
+    totalCartItems =  cart.fold(0, (previousValue, element) => previousValue + element.qty);
+    isRequestingCart = false;
+    pref.setLocalCart(cart);
+    notifyListeners();
+  }
+
+  void getCart() async {
+    isRequestingCart = true;
+    final respCart =  await pref.getLocalCart();
+    if(respCart!=null){
+      cart.clear();
+      cart.addAll(respCart);
+    }
+    totalCartItems =  cart.fold(0, (previousValue, element) => previousValue + element.qty);
+    isRequestingCart = false;
+    notifyListeners();
+
+  }
+
+  void calcCartDetails(){
+    final productMap = cart.asMap().map((key, value) => MapEntry(value.id, products.firstWhere((element) => element.id == value.id)));
+    final qtyMap = cart.asMap().map((key, value) => MapEntry(value.id, value.qty));
+    final cartToAdd = cart.map((e) => ProductUiModel(id: e.id, urlImage: productMap[e.id]!.image, name: productMap[e.id]!.title, price: Utils.convCurrency(productMap[e.id]!.price))).toList();
+    totalCartPrice = productMap.values.toList().fold(0.0, (previousValue, element) => previousValue + qtyMap[element.id]!*element.price);
+    cartQtys = cart.map((e) => e.qty).toList();
+    cartDetailsUi.clear();
+    cartDetailsUi.addAll(cartToAdd);
+  }
+
+  void filterProducts(String searchItem ){
+    if(searchItem.length>2){
+      final search = searchItem.toLowerCase();
+      final elements = products.where((element) => element.title.toLowerCase().contains(search) || element.description.toLowerCase().contains(search)).toList();
+      final productsUiTemp =  elements.map((e) => ProductUiModel(id: e.id, urlImage: e.image, name: e.title, price: Utils.convCurrency(e.price) )).toList();
+      productsUi.clear();
+      productsUi.addAll(productsUiTemp);
+    }else{
+      productsUi.clear();
+    }
+    notifyListeners();
+
   }
 
 }

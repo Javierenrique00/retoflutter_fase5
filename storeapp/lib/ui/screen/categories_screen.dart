@@ -30,8 +30,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
         return AppWbarTemplate(
           title: 'Categories',
-          counter: '3',
-          onCLickCounter: () {},
+          counter: viewModel.totalCartItems.toString(),
+          onCLickCounter: () => Navigator.pushNamed(context, Navigation.cartScreen),
           child: showData(
             viewModel.productsUi,
             viewModel.hasValidProducts && viewModel.hasValidCategories,
@@ -77,4 +77,5 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       return const LoadingPage();
     }
   }
+
 }

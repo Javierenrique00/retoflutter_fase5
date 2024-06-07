@@ -2,6 +2,8 @@ import 'dart:convert' as convert;
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../domain/model/local_cart_model/local_cart_model.dart';
+import '../../domain/model/local_cart_model/mapper/local_cart_model_mapper.dart';
 import '../../domain/model/local_session_model/local_session_model.dart';
 import '../../domain/model/local_session_model/mapper/local_session_model_mapper.dart';
 import 'preferences_interface.dart';
@@ -39,6 +41,37 @@ class Preferences implements PreferencesInterface {
     prefs?.remove('local_session');
   }
 
+  @override
+  Future<List<LocalCartModel>?> getLocalCart() async {
+      try {
+        prefs ??= await SharedPreferences.getInstance();
+        var str = prefs?.getString('local_cart');
+        if(str == null) return null;
+        final cartListConv = convert.jsonDecode(str); //as List<dynamic>;
+        final List<LocalCartModel> resultList = [];
+        for(final element in cartListConv){
+            final conv = localCartModelFromJsonMapper(element);
+            resultList.add(conv);
+        }
+        return resultList;
+      }catch(error){
+        return null;
+      }
+  }
+
+  @override
+  void setLocalCart(List<LocalCartModel> cart) async {
+    final strMap = cart.map((e) => convert.jsonEncode(localCartModelToJsonMapper(e))).toList().toString();
+    //final jsonStr = convert.jsonEncode(strMap);
+    prefs ??= await SharedPreferences.getInstance();
+    prefs?.setString('local_cart', strMap);
+  }
+
+  @override
+  void deleteLocalCart() async {
+    prefs ??= await SharedPreferences.getInstance();
+    prefs?.remove('local_cart');
+  }
 
 
   

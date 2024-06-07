@@ -7,8 +7,10 @@ import 'package:atomicdesign/ui/template/app_wbar_template.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../domain/viewmodel/home_session_viewmodel.dart';
 import '../../domain/viewmodel/pdp_viewmodel.dart';
 import '../common/utils.dart';
+import '../navigation/navigation.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({super.key});
@@ -30,18 +32,21 @@ class _DetailScreenState extends State<DetailScreen> {
           viewModel.getProductDetail(id);
           hasInit = true;
         }
-
-        return AppWbarTemplate(
+        return Consumer<HomeSessionViewModel>(builder: (context, sessionViewModel, child){
+          return AppWbarTemplate(
           title: 'PDP',
-          counter: '3',
-          onCLickCounter: () {},
+          counter: sessionViewModel.totalCartItems.toString(),
+          onCLickCounter:() => Navigator.pushNamed(context, Navigation.cartScreen),
           child: showDetail(
               viewModel.productDetail,
               viewModel.hasValidProductDetail,
               viewModel.hasErrorProductDetail, () {
             viewModel.getProductDetail(id);
+          },(id){
+            sessionViewModel.addToCart(id);
           }),
         );
+        },);
       },
     );
   }
@@ -51,6 +56,7 @@ class _DetailScreenState extends State<DetailScreen> {
     bool isValid,
     bool hasError,
     Function() onPressedRetry,
+    Function (int id) addToCart
   ) {
     if (hasError) {
       return TryAgainPage(onPressed: onPressedRetry());
@@ -65,6 +71,7 @@ class _DetailScreenState extends State<DetailScreen> {
           category: product.category,
           image: product.image,
         ),
+        addToCart:(id) => addToCart(id),
       );
     } else {
       return const LoadingPage();
