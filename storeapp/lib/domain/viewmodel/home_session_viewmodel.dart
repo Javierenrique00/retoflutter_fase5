@@ -22,6 +22,10 @@ class HomeSessionViewModel extends ChangeNotifier {
   var hasValidProducts = false;
   var hasErrorProducts = false;
 
+  var hasValidProductDetail = false;
+  var hasErrorProductDetail = false;
+  ProductModel? productDetail;
+
   var hasValidCategories = false;
   var hasErrorCategories = false;
   List<String> categories = [];
@@ -67,6 +71,26 @@ class HomeSessionViewModel extends ChangeNotifier {
   void _deleteSession() async {
     pref.deleteSessionModel();
   }
+
+  void getProductDetail(int id) async {
+    hasValidProductDetail = false;
+    hasErrorProductDetail = false;
+    notifyListeners();
+    final productEither = await storeApi.getSingleProduct(id);
+    productEither.fold(
+    (l){
+      hasValidProductDetail = false;
+      hasErrorProductDetail = true;
+      notifyListeners();
+    },
+    (r){
+      hasValidProductDetail = true;
+      hasErrorProductDetail = false;
+      productDetail = r;
+      notifyListeners();
+    });
+  }
+
 
   void getDataForCategory(String category) async {
     hasErrorProducts = false;

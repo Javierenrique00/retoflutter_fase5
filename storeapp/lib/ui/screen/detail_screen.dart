@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../domain/viewmodel/home_session_viewmodel.dart';
-import '../../domain/viewmodel/pdp_viewmodel.dart';
 import '../common/utils.dart';
 import '../navigation/navigation.dart';
 
@@ -26,10 +25,12 @@ class _DetailScreenState extends State<DetailScreen> {
   Widget build(BuildContext context) {
     final id = ModalRoute.of(context)!.settings.arguments as int;
 
-    return Consumer<PdpViewModel>(
+    return Consumer<HomeSessionViewModel>(
       builder: (context, viewModel, child) {
         if (!hasInit) {
           viewModel.getProductDetail(id);
+          viewModel.getAllProducts();
+          viewModel.getCart();
           hasInit = true;
         }
         return Consumer<HomeSessionViewModel>(builder: (context, sessionViewModel, child){
@@ -39,8 +40,8 @@ class _DetailScreenState extends State<DetailScreen> {
           onCLickCounter:() => Navigator.pushNamed(context, Navigation.cartScreen),
           child: showDetail(
               viewModel.productDetail,
-              viewModel.hasValidProductDetail,
-              viewModel.hasErrorProductDetail, () {
+              viewModel.hasValidProductDetail && viewModel.hasValidProducts,
+              viewModel.hasErrorProductDetail || viewModel.hasErrorProducts, () {
             viewModel.getProductDetail(id);
           },(id){
             sessionViewModel.addToCart(id);

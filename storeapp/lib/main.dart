@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'domain/viewmodel/home_session_viewmodel.dart';
-import 'domain/viewmodel/pdp_viewmodel.dart';
 import 'infraestructure/local/preferences.dart';
 import 'ui/navigation/routes.dart';
 
@@ -20,7 +19,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => HomeSessionViewModel(pref: Preferences(),storeApi:  StoreApi()) ),
-      ChangeNotifierProvider(create: (_) => PdpViewModel(storeApi:  StoreApi())), 
     ],
     child: const MyAppWithState(),);
   }
