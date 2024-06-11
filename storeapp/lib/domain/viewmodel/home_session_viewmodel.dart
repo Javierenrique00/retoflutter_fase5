@@ -68,9 +68,6 @@ class HomeSessionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _deleteSession() async {
-    pref.deleteSessionModel();
-  }
 
   void getProductDetail(int id) async {
     hasValidProductDetail = false;
