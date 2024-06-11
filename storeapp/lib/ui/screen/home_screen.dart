@@ -33,14 +33,16 @@ class _HomeScreenState extends State<HomeScreen> {
         final greeting = viewModel.session?.firstName ?? "";
         final content = viewModel.session != null
             ? LobbyPage(
-                categoriesNames: const ['Product Categories', 'Search'],
-                categoriesWidgets: const [ClothesSvgAtom(), Icon(Icons.search)],
+                categoriesNames: const ['Product Categories', 'Search','Help'],
+                categoriesWidgets: const [ClothesSvgAtom(), Icon(Icons.search),Icon(Icons.help_outline_rounded)],
                 onClickCategories: (id) {
                   switch (id) {
                     case 0:
                       Navigator.pushNamed(context, Navigation.categoriesScreen);
                     case 1:
                       Navigator.pushNamed(context, Navigation.searchScreen);
+                    case 2:
+                      Navigator.pushNamed(context, Navigation.helpScreen);
                   }
                 },
                 promotionItems: HomePromotions().promotionItems,
