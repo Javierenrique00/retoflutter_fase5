@@ -4,13 +4,14 @@ Proyecto de una aplicación tipo store de flutter.
 
 ## Diagrama y flujo descriptivo
 
-El App Está compuesto principalemente de 5 pantallas así:
+El App Está compuesto principalemente de 6 pantallas así:
 
 - HomeScreen
 - SearchScren
 - CategoriesScreen
 - DetailScreen
 - CartScreen
+- HelpScreen
 
 ![Diagrama](./documentation/appDiagram.png)
 
@@ -30,6 +31,7 @@ Desde la barra de Servicios: (La barra de servicios se podrá expandir con mas i
 
 - CategoryScreen
 - SearchScreen
+- HelpScreen
 
 Al cartScreen, directamente haciendo tap en el ícono del carrito.
 
@@ -73,3 +75,9 @@ Desde cualquier pantalla se puede acceder al CartScreen haciendo click sobre el 
 En el cartScreen se ven cuantos items están agregados al carrito y se podrá modificar las cantidades de los productos agregados al carrito.
 
 También se observa cuanto vale la suma de todos los productos.
+
+### HelpScreen
+
+![HelpScreen](./documentation/helpScreen.jpg)
+
+Esta pantalla solo tiene información para ayuda y contacto, la cual es parametrizable.
