@@ -15,9 +15,9 @@ El App Está compuesto principalemente de 6 pantallas así:
 
 ![Diagrama](./documentation/appDiagram.png)
 
-Cuando se corre la aplicación se revisa si tiene guardado un usuario en el Sharepreferences, y si no se encuentra creado un usuario se pide crear el usuario y se almacena localmente este usuario (No se hace una revisión contra el backend, ni se guarda una copia del backend de este usuario). De ahí se lelga al Lobby den el HomeScreen.
+Cuando se corre la aplicación se revisa si tiene guardado un usuario en el Sharepreferences, y si no se encuentra creado un usuario se pide crear el usuario y se almacena localmente este usuario (No se hace una revisión contra el backend, ni se guarda una copia del backend de este usuario). De ahí se llega al Lobby en el HomeScreen.
 
-Localmente también se guarda el carrito de compras el cual se crea, guardando un listado de Id de productos y las cantidades de estos. No se envía al backend nada del carrito y este se mantiene localmente cuando se agregan o eliminan productos.
+Localmente en el sharepreferences también se guarda el carrito de compras el cual se crea, guardando un listado de Id de productos y las cantidades de estos. No se envía al backend nada del carrito y este se mantiene localmente cuando se agregan o eliminan productos.
 
 ### HomeScreen
 
